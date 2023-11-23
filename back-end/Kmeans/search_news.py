@@ -11,6 +11,9 @@ db=client['News']
 client_2 = MongoClient("mongodb+srv://userdb2:userdb2@cluster0.whf1ljw.mongodb.net/?retryWrites=true&w=majority")
 #db_daily_2 = client_2['關鍵每一天']
 db_2=client_2['News']
+client_3 = MongoClient("mongodb+srv://userdb2:userdb2@cluster0.whf1ljw.mongodb.net/?retryWrites=true&w=majority")
+db_3=client_3['News']
+
 
 def newest_news_search(combined_data):
     df = pd.DataFrame(combined_data)
@@ -68,6 +71,8 @@ def hot_all_search_news(option):
                 keyword_news_data.extend(news_data)  # 把查詢結果加入列表
                 news_data_2 = list(db_2[collection_name].aggregate(pipeline))
                 keyword_news_data.extend(news_data_2)  # 把查詢結果加入列表
+                news_data_3 = list(db_3[collection_name].aggregate(pipeline))
+                keyword_news_data.extend(news_data_3)  # 把查詢結果加入列表
                 
         # 提取新聞標題和摘要文本
         news_text = [news['combined_text'] for news in keyword_news_data]
@@ -81,8 +86,12 @@ def hot_all_search_news(option):
             news['document']['similarity'] = similarity_scores[i]
 
         df_keyword_news_data = convert_to_dataframe(keyword_news_data)
-        
-        result = hot_run_kmeans_from_df(df_keyword_news_data,int(len(df_keyword_news_data)/2))
+        print(len(df_keyword_news_data))
+        if int(len(df_keyword_news_data)/5) == 0 :
+            result = hot_run_kmeans_from_df(df_keyword_news_data, 1)
+        else:
+            result = hot_run_kmeans_from_df(df_keyword_news_data, int(len(df_keyword_news_data) / 5))
+
         # 按照相似度和時間戳排序
         
         result.sort(key=lambda x: (x['similarity'], x['timestamp']), reverse=True)
@@ -135,7 +144,9 @@ def hot_topic_search_news(collection_name, option):
         news_data.extend(news_data_1)
         news_data_2 = list(db_2[collection_name].aggregate(pipeline))
         news_data.extend(news_data_2)
-
+        news_data_3 = list(db_3[collection_name].aggregate(pipeline))
+        news_data.extend(news_data_3)
+        
         print("原本:")
         print(len(news_data))
         if len(news_data) < 20:
@@ -168,6 +179,8 @@ def hot_topic_search_news(collection_name, option):
             news_data.extend(news_data_1)
             news_data_2 = list(db_2[collection_name].aggregate(pipeline))
             news_data.extend(news_data_2)
+            news_data_3 = list(db_3[collection_name].aggregate(pipeline))
+            news_data.extend(news_data_3)
             
             print("後來:")
             print(len(news_data))
