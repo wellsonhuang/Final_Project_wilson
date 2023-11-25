@@ -11,7 +11,7 @@ db=client['News']
 client_2 = MongoClient("mongodb+srv://userdb2:userdb2@cluster0.whf1ljw.mongodb.net/?retryWrites=true&w=majority")
 #db_daily_2 = client_2['關鍵每一天']
 db_2=client_2['News']
-client_3 = MongoClient("mongodb+srv://userdb2:userdb2@cluster0.whf1ljw.mongodb.net/?retryWrites=true&w=majority")
+client_3 = MongoClient("mongodb+srv://user3:user3@cluster0.z6fmrfb.mongodb.net/?retryWrites=true&w=majority")
 db_3=client_3['News']
 
 
